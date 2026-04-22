@@ -11,9 +11,26 @@ st.write(
 
 data = load_indicator_data()
 
-st.subheader("Dataset preview")
-st.dataframe(data.head(20), use_container_width=True)
+min_year = int(data["year"].min())
+max_year = int(data["year"].max())
 
-st.write(f"Total rows loaded: {len(data)}")
-st.write(f"Year range: {data['year'].min()} to {data['year'].max()}")
-st.write(f"Total countries/areas: {data['country'].nunique()}")
+selected_year_range = st.sidebar.slider(
+    "Select year range",
+    min_value=min_year,
+    max_value=max_year,
+    value=(max_year - 10, max_year),
+)
+
+filtered_data = data[
+    (data["year"] >= selected_year_range[0]) &
+    (data["year"] <= selected_year_range[1])
+]
+
+st.subheader("Dataset preview")
+st.dataframe(filtered_data.head(20), use_container_width=True)
+
+st.write(f"Total rows loaded: {len(filtered_data)}")
+st.write(
+    f"Selected year range: {selected_year_range[0]} to {selected_year_range[1]}"
+)
+st.write(f"Total countries/areas: {filtered_data['country'].nunique()}")
