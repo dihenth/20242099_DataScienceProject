@@ -21,10 +21,20 @@ selected_year_range = st.sidebar.slider(
     value=(max_year - 10, max_year),
 )
 
+countries = sorted(data["country"].unique().tolist())
+selected_countries = st.sidebar.multiselect(
+    "Select countries",
+    options=countries,
+    default=[],
+)
+
 filtered_data = data[
     (data["year"] >= selected_year_range[0]) &
     (data["year"] <= selected_year_range[1])
 ]
+
+if selected_countries:
+    filtered_data = filtered_data[filtered_data["country"].isin(selected_countries)]
 
 st.subheader("Dataset preview")
 st.dataframe(filtered_data.head(20), use_container_width=True)
