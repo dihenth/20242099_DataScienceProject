@@ -37,11 +37,27 @@ filtered_data = data[
 if selected_countries:
     filtered_data = filtered_data[filtered_data["country"].isin(selected_countries)]
 
-st.subheader("Trend over time")
+st.subheader("Summary")
 
 if filtered_data.empty:
     st.warning("No data is available for the selected filters.")
 else:
+    latest_year = int(filtered_data["year"].max())
+    latest_data = filtered_data[filtered_data["year"] == latest_year]
+    top_row = latest_data.sort_values("value", ascending=False).iloc[0]
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Latest year", latest_year)
+    col2.metric("Countries/areas", filtered_data["country"].nunique())
+    col3.metric("Average value", f"{latest_data['value'].mean():.2f}%")
+    col4.metric("Highest country", top_row["country"])
+
+    st.info(
+        f"In {latest_year}, the highest value in the selected data was "
+        f"{top_row['country']} at {top_row['value']:.2f}%."
+    )
+
+    st.subheader("Trend over time")
     line_chart = px.line(
         filtered_data,
         x="year",
