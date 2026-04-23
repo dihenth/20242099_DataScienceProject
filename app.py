@@ -73,6 +73,23 @@ else:
     )
     st.plotly_chart(line_chart, use_container_width=True)
 
+    st.subheader(f"Top 10 countries in {latest_year}")
+    top_10 = latest_data.sort_values("value", ascending=False).head(10)
+
+    ranking_chart = px.bar(
+        top_10,
+        x="value",
+        y="country",
+        orientation="h",
+        title=f"Top 10 countries in {latest_year}",
+        labels={
+            "value": "Renewable electricity excluding hydroelectric (% of total)",
+            "country": "Country",
+        },
+    )
+    ranking_chart.update_layout(yaxis={"categoryorder": "total ascending"})
+    st.plotly_chart(ranking_chart, use_container_width=True)
+
 st.subheader("Dataset preview")
 st.dataframe(filtered_data.head(20), use_container_width=True)
 
