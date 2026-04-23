@@ -1,3 +1,4 @@
+import plotly.express as px
 import streamlit as st
 from src.data import load_indicator_data
 
@@ -35,6 +36,26 @@ filtered_data = data[
 
 if selected_countries:
     filtered_data = filtered_data[filtered_data["country"].isin(selected_countries)]
+
+st.subheader("Trend over time")
+
+if filtered_data.empty:
+    st.warning("No data is available for the selected filters.")
+else:
+    line_chart = px.line(
+        filtered_data,
+        x="year",
+        y="value",
+        color="country",
+        markers=True,
+        title="Renewable electricity production excluding hydroelectric",
+        labels={
+            "year": "Year",
+            "value": "Renewable electricity excluding hydroelectric (% of total)",
+            "country": "Country",
+        },
+    )
+    st.plotly_chart(line_chart, use_container_width=True)
 
 st.subheader("Dataset preview")
 st.dataframe(filtered_data.head(20), use_container_width=True)
