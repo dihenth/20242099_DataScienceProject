@@ -4,13 +4,18 @@ from src.data import load_indicator_data
 
 st.set_page_config(page_title="Renewable Electricity Dashboard", layout="wide")
 
+
+@st.cache_data
+def get_data():
+    return load_indicator_data()
+
 st.title("Renewable Electricity Dashboard")
 st.write(
     "This dashboard analyses the World Bank indicator for electricity "
     "production from renewable sources, excluding hydroelectric."
 )
 
-data = load_indicator_data()
+data = get_data()
 
 min_year = int(data["year"].min())
 max_year = int(data["year"].max())
