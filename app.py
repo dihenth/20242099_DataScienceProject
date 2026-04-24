@@ -16,6 +16,16 @@ st.write(
     "production from renewable sources, excluding hydroelectric."
 )
 
+st.subheader("How to use this dashboard")
+st.markdown(
+    """
+    - Use the year range slider to focus on a specific period.
+    - Use the region filter to narrow the analysis by world region.
+    - Use the country selector to compare one or more countries.
+    - Download the filtered dataset as a CSV file for further analysis.
+    """
+)
+
 data = get_data()
 
 min_year = int(data["year"].min())
