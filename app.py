@@ -9,6 +9,7 @@ st.set_page_config(page_title="Renewable Electricity Dashboard", layout="wide")
 def get_data():
     return load_indicator_data()
 
+
 st.title("Renewable Electricity Dashboard")
 st.write(
     "This dashboard analyses the World Bank indicator for electricity "
@@ -27,6 +28,12 @@ selected_year_range = st.sidebar.slider(
     value=(max_year - 10, max_year),
 )
 
+regions = sorted(data["region"].dropna().unique().tolist())
+selected_region = st.sidebar.selectbox(
+    "Select region",
+    options=["All regions"] + regions,
+)
+
 countries = sorted(data["country"].unique().tolist())
 selected_countries = st.sidebar.multiselect(
     "Select countries",
@@ -38,6 +45,9 @@ filtered_data = data[
     (data["year"] >= selected_year_range[0]) &
     (data["year"] <= selected_year_range[1])
 ]
+
+if selected_region != "All regions":
+    filtered_data = filtered_data[filtered_data["region"] == selected_region]
 
 if selected_countries:
     filtered_data = filtered_data[filtered_data["country"].isin(selected_countries)]
@@ -99,15 +109,3 @@ st.subheader("Dataset preview")
 st.dataframe(filtered_data.head(20), use_container_width=True)
 
 csv_data = filtered_data.to_csv(index=False).encode("utf-8")
-st.download_button(
-    label="Download filtered data as CSV",
-    data=csv_data,
-    file_name="filtered_renewable_electricity_data.csv",
-    mime="text/csv",
-)
-
-st.write(f"Total rows loaded: {len(filtered_data)}")
-st.write(
-    f"Selected year range: {selected_year_range[0]} to {selected_year_range[1]}"
-)
-st.write(f"Total countries/areas: {filtered_data['country'].nunique()}")
