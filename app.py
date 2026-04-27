@@ -116,6 +116,19 @@ else:
     st.plotly_chart(ranking_chart, use_container_width=True)
 
 st.subheader("Dataset preview")
-st.dataframe(filtered_data.head(20), use_container_width=True)
 
 csv_data = filtered_data.to_csv(index=False).encode("utf-8")
+st.download_button(
+    label="Download filtered data as CSV",
+    data=csv_data,
+    file_name="filtered_renewable_electricity_data.csv",
+    mime="text/csv",
+)
+
+st.dataframe(filtered_data.head(20), use_container_width=True)
+
+st.write(f"Total rows loaded: {len(filtered_data)}")
+st.write(
+    f"Selected year range: {selected_year_range[0]} to {selected_year_range[1]}"
+)
+st.write(f"Total countries/areas: {filtered_data['country'].nunique()}")
